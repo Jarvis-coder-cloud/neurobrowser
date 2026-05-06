@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search — NeuroBrowser</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --fg: #e6edf3;
+        --muted: #8b949e;
+        --accent: #58a6ff;
+        --border: #21262d;
+        --panel: #111820;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        flex: 0 0 auto;
+        padding: 0.85rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+      }
+      .brand {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.35rem;
+      }
+      .query {
+        margin: 0 0 0.75rem;
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        word-break: break-word;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .open-full {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--bg);
+        background: var(--accent);
+        border-radius: 6px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+      }
+      .open-full:hover {
+        filter: brightness(1.08);
+      }
+      .hint {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .iframe-wrap {
+        flex: 1 1 auto;
+        min-height: 0;
+        position: relative;
+        background: var(--bg);
+      }
+      iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #fff;
+      }
+      #fallback {
+        display: none;
+        flex: 0 0 auto;
+        padding: 1rem 1.25rem;
+        border-top: 1px solid var(--border);
+        background: #161b22;
+        text-align: center;
+      }
+      #fallback.visible {
+        display: block;
+      }
+      #fallback .open-full {
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">NeuroBrowser</div>
+      <h1 class="query" id="queryDisplay"></h1>
+      <div class="actions">
+        <a class="open-full" id="openTop" href="#" target="_top" rel="noopener noreferrer">Open results</a>
+        <span class="hint">Preview may be limited by the search provider. Use the button if the frame stays blank.</span>
+      </div>
+    </header>
+    <div class="iframe-wrap">
+      <iframe
+        id="results"
+        title="Search results"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"
+      ></iframe>
+    </div>
+    <div id="fallback">
+      <div class="hint">The results preview may be blocked or empty in this view.</div>
+      <a class="open-full" id="openTopFallback" href="#" target="_top" rel="noopener noreferrer">Open results</a>
+    </div>
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var rawQ = params.get('q');
+        var q = rawQ == null ? '' : rawQ;
+        var preview = params.get('p');
+        var full = params.get('f');
+        var displayEl = document.getElementById('queryDisplay');
+        var frame = document.getElementById('results');
+        var openTop = document.getElementById('openTop');
+        var openTopFb = document.getElementById('openTopFallback');
+        var fallback = document.getElementById('fallback');
+
+        if (!displayEl || !frame || !openTop || !openTopFb || !fallback) return;
+
+        if (!q.trim()) {
+          displayEl.textContent = '(no search query)';
+          return;
+        }
+
+        displayEl.textContent = q;
+
+        var ddg = 'https://duckduckgo.com/?q=' + encodeURIComponent(q);
+        var ddgHtml = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(q);
+
+        var openUrl = full && full.trim() ? full : ddg;
+        var previewUrl = preview && preview.trim() ? preview : ddgHtml;
+
+        openTop.href = openUrl;
+        openTopFb.href = openUrl;
+
+        frame.src = previewUrl;
+
+        var loadSeen = false;
+        frame.addEventListener('load', function () {
+          loadSeen = true;
+        });
+
+        window.setTimeout(function () {
+          if (!loadSeen) {
+            fallback.classList.add('visible');
+            return;
+          }
+          try {
+            var doc = frame.contentDocument;
+            if (doc && doc.body) {
+              var t = (doc.body.innerText || '').trim();
+              if (t.length < 8) fallback.classList.add('visible');
+            }
+          } catch (e) {
+            /* cross-origin: assume preview loaded */
+          }
+        }, 2800);
+      })();
+    </script>
+  </body>
+</html>
