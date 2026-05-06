@@ -1,32 +1,34 @@
 :root,
 :root.nb-theme-dark {
   color-scheme: dark;
-  --bg: #0b0f14;
-  --panel: #111826;
-  --panel2: #0f1622;
-  --border: rgba(255, 255, 255, 0.08);
-  --text: rgba(255, 255, 255, 0.92);
+  --bg: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070') center/cover no-repeat fixed;
+  --panel: rgba(17, 24, 38, 0.65);
+  --panel2: rgba(15, 22, 34, 0.75);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.95);
   --muted: rgba(255, 255, 255, 0.65);
-  --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-  --radius: 10px;
-  --focus: rgba(90, 173, 255, 0.45);
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  --radius: 12px;
+  --focus: rgba(90, 173, 255, 0.6);
   --danger: rgba(255, 120, 120, 0.95);
-  --danger-bg: rgba(255, 80, 80, 0.12);
+  --danger-bg: rgba(255, 80, 80, 0.15);
+  --glass-blur: blur(24px);
 }
 
 :root.nb-theme-light {
   color-scheme: light;
-  --bg: #f3f5f9;
-  --panel: #ffffff;
-  --panel2: #f7f8fc;
-  --border: rgba(15, 23, 42, 0.12);
+  --bg: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2064') center/cover no-repeat fixed;
+  --panel: rgba(255, 255, 255, 0.7);
+  --panel2: rgba(247, 248, 252, 0.75);
+  --border: rgba(15, 23, 42, 0.15);
   --text: rgba(15, 23, 42, 0.92);
   --muted: rgba(15, 23, 42, 0.62);
-  --shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-  --radius: 10px;
-  --focus: rgba(37, 99, 235, 0.35);
+  --shadow: 0 16px 40px rgba(15, 23, 42, 0.15);
+  --radius: 12px;
+  --focus: rgba(37, 99, 235, 0.5);
   --danger: rgba(185, 28, 28, 0.95);
-  --danger-bg: rgba(185, 28, 28, 0.1);
+  --danger-bg: rgba(185, 28, 28, 0.15);
+  --glass-blur: blur(24px);
 }
 
 * {
@@ -39,8 +41,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 13px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-    "Apple Color Emoji", "Segoe UI Emoji";
+  font: 14px/1.5 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
 }
 
 #root {
@@ -54,11 +56,13 @@ body {
 }
 
 .nb-tabbar {
-  height: 36px;
+  height: 44px;
   display: flex;
   align-items: flex-end;
-  padding: 8px 10px 0;
-  background: linear-gradient(180deg, var(--panel), var(--panel2));
+  padding: 8px 12px 6px;
+  background: var(--panel);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--border);
   gap: 8px;
 }
@@ -68,16 +72,29 @@ body {
 }
 
 .nb-tab {
-  max-width: 360px;
-  height: 28px;
+  max-width: 240px;
+  min-width: 120px;
+  height: 32px;
   display: inline-flex;
   align-items: stretch;
-  border: 1px solid var(--border);
-  border-bottom: none;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
   color: var(--muted);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+:root.nb-theme-light .nb-tab {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.nb-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+:root.nb-theme-light .nb-tab:hover {
+  background: rgba(15, 23, 42, 0.1);
 }
 
 .nb-tabMain {
@@ -86,26 +103,30 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0 6px 0 10px;
+  padding: 0 6px 0 12px;
   border: 0;
   background: transparent;
   color: inherit;
   cursor: default;
-  border-top-left-radius: 10px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .nb-tabClose {
-  width: 28px;
+  width: 32px;
   border: 0;
-  border-left: 1px solid var(--border);
+  border-left: 1px solid transparent;
   background: transparent;
   color: inherit;
   cursor: pointer;
-  border-top-right-radius: 10px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .nb-tabClose:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 100, 100, 0.8);
+  color: #fff;
 }
 
 .nb-newTab {
@@ -140,8 +161,15 @@ body {
 }
 
 .nb-tab.is-active {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.15);
   color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+:root.nb-theme-light .nb-tab.is-active {
+  background: rgba(15, 23, 42, 0.12);
+  border-color: rgba(15, 23, 42, 0.15);
 }
 
 .nb-tabIcon {
@@ -173,13 +201,16 @@ body {
 }
 
 .nb-navbar {
-  height: 40px;
+  height: 50px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 10px;
+  gap: 12px;
+  padding: 8px 14px;
   background: var(--panel2);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
 .nb-navButtons {
@@ -238,21 +269,46 @@ body {
 
 .nb-omnibox {
   flex: 1;
-  height: 28px;
-  border-radius: var(--radius);
+  height: 34px;
+  border-radius: 17px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.2);
   color: var(--text);
-  padding: 0 12px;
+  padding: 0 16px;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+:root.nb-theme-light .nb-omnibox {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.nb-omnibox:focus {
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px var(--focus);
+  border-color: transparent;
+}
+:root.nb-theme-light .nb-omnibox:focus {
+  background: #fff;
 }
 
 .nb-goBtn {
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 10px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 17px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.nb-goBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+.nb-goBtn:active {
+  transform: scale(0.95);
 }
 
 .nb-status {
